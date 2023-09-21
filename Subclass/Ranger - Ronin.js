@@ -3,22 +3,22 @@ var iFileName = "Ranger - Ronin.js";
 RequiredSheetVersion("13");
 
 SourceList["RG:YR"] = {
-	name : "Ryoko's Guide to the Yokai Realms", 
+	name : "Ryoko's Guide to the Yokai Realms A 5e Tome", 
 	abbreviation : "RG:YR", 
-	group : "Homebrew",
-	url : "",
-	date: "2023/07/28"
+	group : "Ryoko's Guide to the Yokai Realms",
+	url : "(https://www.kickstarter.com/projects/dndshorts/ryokos-guide-to-the-yokai-realms-a-5e-tome?ref=9yd5sv)",
+	date: "2023/10/12"
 };
 
 AddSubClass("ranger", "ronin", { 
 		regExpSearch : /ronin/i,
 		subname : "Ronin",
 		fullname : "Ronin",
-		source : [["RG:YR", 1]],
+		source : [["RG:YR", 0]],
 		features : { 
 			"subclassfeatures3" : {
 				name : "Wandering Magic",
-				source : [["RG:YR", 3]],
+				source : [["RG:YR", 0]],
 				minlevel : 3,
 				description : desc([
 					"You learn an additional spell when you reach certain levels in this class.",
@@ -29,18 +29,32 @@ AddSubClass("ranger", "ronin", {
 			},
 			"subclassfeature3.1" : {
 				name : "Slash Draw",
-				source : [["RG:YR", 3]],
+				source : [["RG:YR", 0]],
 				minlevel : 3,				
 				description : desc([
 					"You have mastered the art of striking with sudden, explosive power at any moment.",
-					"The first time each turn that you hit a creature with a melee weapon attack using a weapon you drew that turn, the attack deals an extra 1d6 damage of that weapon’s type.",
-					"This extra damage increases to 1d8 when you reach 11th level in this class."
-				])
+					"The first time each turn that you hit a creature with a melee weapon attack using a weapon you drew that turn."
+				]),
+				additional : levels.map(function (n) {
+					return n < 3 ? "" : "+1d" + (n < 11 ? 4 : 6) + " weapons type";
+				}),
+				calcChanges : {
+					atkAdd : [
+						function (fields, v) {
+							if (v.isWeapon && (classes.known.ranger || classes.known.rangerua)) {
+								var rngrLvl = classes.known.ranger ? classes.known.ranger.level : classes.known.rangerua.level;
+								fields.Description += (fields.Description ? '; ' : '') + 'First time each turn hit target with wpn you drew +1d' + (rngrLvl < 11 ? 6 : 8) + ' weapons type';
+							};
+						},
+						"The attack deals an extra 1d6 damage of that weapon’s type. This extra damage increases to 1d8 when you reach 11th level in this class."
+					]
+				}	
 			},
 			"subclassfeature3.2" : {
 				name : "Masterless",
-				source : [["RG:YR", 1]],
+				source : [["RG:YR", 0]],
 				minlevel : 3,
+				savetxt : { text : "To avoid/end charmed, roll d6 then add to ST" },
 				description : desc([
 					"You are a solitary warrior, shackled by no code or authority beyond your own.",
 					"Whenever you make a saving throw to avoid or end the charmed condition on yourself, roll a d6 and add the number rolled to the saving throw."
@@ -48,7 +62,7 @@ AddSubClass("ranger", "ronin", {
 			},
 			"subclassfeature7" : {
 				name : "Cleaving Parry",
-				source : [["RG:YR", 1]],
+				source : [["RG:YR", 0]],
 				minlevel : 7,
 				description : desc([
 					"When a creature makes a weapon attack against you while you have a stowed melee weapon and a free hand, you can use your reaction to attempt to parry that blow, drawing your stowed weapon as you do so.",
@@ -59,7 +73,7 @@ AddSubClass("ranger", "ronin", {
 			},
 			"subclassfeature11" : {
 				name : "Multi-Weapon Mastery",
-				source : ["RG:YR", 3],
+				source : ["RG:YR", 0],
 				minlevel : 11,			
 				description : desc([
 					"You have advantage on the first melee weapon attack you make each turn, as well as advantage on the first ranged weapon attack you make each turn.",
@@ -68,7 +82,7 @@ AddSubClass("ranger", "ronin", {
 			},
 			"subclassfeature15" : {
 				name : "Relentless Onslaught",
-				source : ["RG:YR", 3],
+				source : ["RG:YR", 0],
 				minlevel : 15,
 				usages : 3,
 				description : desc([
@@ -86,11 +100,11 @@ AddSubClass("rangerua", "ronin-ua", {
 	regExpSearch : /ronin/i,
 	subname : "Ronin",
 	fullname : "Ronin",
-	source : [["RG:YR", 1]],
+	source : [["RG:YR", 0]],
 	features : { 
 		"subclassfeatures3" : {
 			name : "Wandering Magic",
-			source : [["RG:YR", 3]],
+			source : [["RG:YR", 0]],
 			minlevel : 3,
 			description : desc([
 				"You learn an additional spell when you reach certain levels in this class.",
@@ -101,18 +115,32 @@ AddSubClass("rangerua", "ronin-ua", {
 		},
 		"subclassfeature3.1" : {
 			name : "Slash Draw",
-			source : [["RG:YR", 3]],
+			source : [["RG:YR", 0]],
 			minlevel : 3,				
 			description : desc([
 				"You have mastered the art of striking with sudden, explosive power at any moment.",
-				"The first time each turn that you hit a creature with a melee weapon attack using a weapon you drew that turn, the attack deals an extra 1d6 damage of that weapon’s type.",
-				"This extra damage increases to 1d8 when you reach 11th level in this class."
-			])
+				"The first time each turn that you hit a creature with a melee weapon attack using a weapon you drew that turn."
+			]),
+			additional : levels.map(function (n) {
+				return n < 3 ? "" : "+1d" + (n < 11 ? 4 : 6) + " weapons type";
+			}),
+			calcChanges : {
+				atkAdd : [
+					function (fields, v) {
+						if (v.isWeapon && (classes.known.ranger || classes.known.rangerua)) {
+							var rngrLvl = classes.known.ranger ? classes.known.ranger.level : classes.known.rangerua.level;
+							fields.Description += (fields.Description ? '; ' : '') + 'First time each turn hit target with wpn you drew +1d' + (rngrLvl < 11 ? 6 : 8) + ' weapons type';
+						};
+					},
+					"The attack deals an extra 1d6 damage of that weapon’s type. This extra damage increases to 1d8 when you reach 11th level in this class."
+				]
+			}		
 		},
 		"subclassfeature3.2" : {
 			name : "Masterless",
-			source : [["RG:YR", 1]],
+			source : [["RG:YR", 0]],
 			minlevel : 3,
+			savetxt : { text : "To avoid/end charmed, roll d6 then add to ST" },
 			description : desc([
 				"You are a solitary warrior, shackled by no code or authority beyond your own.",
 				"Whenever you make a saving throw to avoid or end the charmed condition on yourself, roll a d6 and add the number rolled to the saving throw."
@@ -120,7 +148,7 @@ AddSubClass("rangerua", "ronin-ua", {
 		},
 		"subclassfeature7" : {
 			name : "Cleaving Parry",
-			source : [["RG:YR", 1]],
+			source : [["RG:YR", 0]],
 			minlevel : 7,
 			description : desc([
 				"When a creature makes a weapon attack against you while you have a stowed melee weapon and a free hand, you can use your reaction to attempt to parry that blow, drawing your stowed weapon as you do so.",
@@ -131,7 +159,7 @@ AddSubClass("rangerua", "ronin-ua", {
 		},
 		"subclassfeature11" : {
 			name : "Multi-Weapon Mastery",
-			source : ["RG:YR", 3],
+			source : ["RG:YR", 0],
 			minlevel : 11,			
 			description : desc([
 				"You have advantage on the first melee weapon attack you make each turn, as well as advantage on the first ranged weapon attack you make each turn.",
@@ -140,7 +168,7 @@ AddSubClass("rangerua", "ronin-ua", {
 		},
 		"subclassfeature15" : {
 			name : "Relentless Onslaught",
-			source : ["RG:YR", 3],
+			source : ["RG:YR", 0],
 			minlevel : 15,
 			usages : 3,
 			description : desc([
